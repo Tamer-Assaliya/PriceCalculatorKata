@@ -13,10 +13,11 @@ namespace PriceCalculatorKata
                 UPC = 12345,
                 Price = 20.253,
             };
+            product.UniversalDiscountPercentage = 15;
             product.ReportProductPrice();
-            // product.TaxPercentage = 21;
-            product.DiscountPercentage = 15;
-
+            product.UPC = 789;
+            product.TaxPercentage = 21;
+            Console.WriteLine("---");
             product.ReportProductPrice();
         }
     }

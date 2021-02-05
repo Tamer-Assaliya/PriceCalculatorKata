@@ -22,14 +22,16 @@ namespace PriceCalculatorKata
                 _taxPercentage = value / 100.0;
             }
         }
-        private double _discountPercentage = 0.0;
-        public double DiscountPercentage
+        private double _upcDiscountPercentage = 0.0;
+
+        private double _universalDiscountPercentage = 0.0;
+        public double UniversalDiscountPercentage
         {
-            get { return _discountPercentage; }
+            get { return _universalDiscountPercentage; }
             set
             {
                 CheckPercentageValidation(value);
-                _discountPercentage = value / 100.0;
+                _universalDiscountPercentage = value / 100.0;
             }
         }
 
@@ -40,11 +42,30 @@ namespace PriceCalculatorKata
         }
         public void ReportProductPrice()
         {
-            double DiscountAmount = Math.Round(Price * DiscountPercentage, 2);
-            double PriceWithTaxAndDiscount = Math.Round(Price * (1 + TaxPercentage - DiscountPercentage), 2);
-            Console.WriteLine($"${Price} before tax and discount and ${PriceWithTaxAndDiscount} after {TaxPercentage * 100}% tax and {DiscountPercentage * 100}% discount");
+            double DiscountAmount = GetTotalDiscountAmount();
+            double TaxAmount = Price * TaxPercentage;
+            double PriceWithTaxAndDiscount = Math.Round(Price + TaxAmount - DiscountAmount, 2);
+            Console.WriteLine($"${Price} before tax and discount and ${PriceWithTaxAndDiscount} after {TaxPercentage * 100}% tax and {UniversalDiscountPercentage * 100}% discount");
             if (DiscountAmount > 0)
-                Console.WriteLine($"Discount amount = {DiscountAmount}");
+                Console.WriteLine($"Total Discount amount = {DiscountAmount}");
+        }
+        private double GetTotalDiscountAmount()
+        {
+            double UnivarsalDiscountAmount = Math.Round(Price * UniversalDiscountPercentage, 2);
+            Console.WriteLine($"Univarsal Discount amount = {UnivarsalDiscountAmount}");
+            switch (UPC)
+            {
+                case 12345:
+                    _upcDiscountPercentage = 0.07;
+                    break;
+                default:
+                    _upcDiscountPercentage = 0.0;
+                    break;
+            }
+            double UPCDiscountAmount = _upcDiscountPercentage * Price;
+            Console.WriteLine($"UPCD Discount amount = {Math.Round(UPCDiscountAmount, 2)}");
+            return Math.Round(UnivarsalDiscountAmount + UPCDiscountAmount, 2);
+
         }
 
     }
