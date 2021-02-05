@@ -2,6 +2,11 @@ using System;
 
 namespace PriceCalculatorKata
 {
+    enum DiscountPrecedence
+    {
+        BeforeTax,
+        AfterTax,
+    }
     class Product
     {
         public string Name { get; set; }
@@ -22,8 +27,9 @@ namespace PriceCalculatorKata
                 _taxPercentage = value / 100.0;
             }
         }
-        private double _upcDiscountPercentage = 0.0;
 
+        private double _upcDiscountPercentage = 0.0;
+        public DiscountPrecedence UPCDiscountPrecedence { get; set; } = DiscountPrecedence.AfterTax;
         private double _universalDiscountPercentage = 0.0;
         public double UniversalDiscountPercentage
         {
@@ -34,7 +40,7 @@ namespace PriceCalculatorKata
                 _universalDiscountPercentage = value / 100.0;
             }
         }
-
+        public DiscountPrecedence UniversalDiscountPrecedence { get; set; } = DiscountPrecedence.AfterTax;
         public void CheckPercentageValidation(double value)
         {
             if (value < 0 && value > 100)
@@ -42,17 +48,31 @@ namespace PriceCalculatorKata
         }
         public void ReportProductPrice()
         {
-            double DiscountAmount = GetTotalDiscountAmount();
-            double TaxAmount = Price * TaxPercentage;
-            double PriceWithTaxAndDiscount = Math.Round(Price + TaxAmount - DiscountAmount, 2);
+            double TotalDiscountAmount = GetUniversalDiscountAmount() + GetUPCDiscountAmount();
+            double TaxAmount = GetTaxAmount(Price);
+            double PriceWithTaxAndDiscount = Math.Round(Price + TaxAmount - TotalDiscountAmount, 2);
             Console.WriteLine($"${Price} before tax and discount and ${PriceWithTaxAndDiscount} after {TaxPercentage * 100}% tax and {UniversalDiscountPercentage * 100}% discount");
-            if (DiscountAmount > 0)
-                Console.WriteLine($"Total Discount amount = {DiscountAmount}");
+            if (TotalDiscountAmount > 0)
+                Console.WriteLine($"Total Discount amount = {TotalDiscountAmount}");
         }
-        private double GetTotalDiscountAmount()
+        private double GetTaxAmount(double Price)
+        {
+            if (UPCDiscountPrecedence == DiscountPrecedence.BeforeTax)
+                Price -= GetUPCDiscountAmount();
+            if (UniversalDiscountPrecedence == DiscountPrecedence.BeforeTax)
+                Price -= GetUniversalDiscountAmount();
+            double TaxAmount = Math.Round(Price * TaxPercentage, 2);
+            Console.WriteLine($"Tax amount = {TaxAmount}");
+            return TaxAmount;
+        }
+        private double GetUniversalDiscountAmount()
         {
             double UnivarsalDiscountAmount = Math.Round(Price * UniversalDiscountPercentage, 2);
             Console.WriteLine($"Univarsal Discount amount = {UnivarsalDiscountAmount}");
+            return Math.Round(UnivarsalDiscountAmount, 2);
+        }
+        private double GetUPCDiscountAmount()
+        {
             switch (UPC)
             {
                 case 12345:
@@ -64,9 +84,7 @@ namespace PriceCalculatorKata
             }
             double UPCDiscountAmount = _upcDiscountPercentage * Price;
             Console.WriteLine($"UPCD Discount amount = {Math.Round(UPCDiscountAmount, 2)}");
-            return Math.Round(UnivarsalDiscountAmount + UPCDiscountAmount, 2);
-
+            return Math.Round(UPCDiscountAmount, 2);
         }
-
     }
 }
