@@ -14,7 +14,9 @@ namespace PriceCalculatorKata
                 Price = 20.253,
             };
             product.ReportProductPrice();
-            product.TaxPercentage = 21;
+            // product.TaxPercentage = 21;
+            product.DiscountPercentage = 15;
+
             product.ReportProductPrice();
         }
     }

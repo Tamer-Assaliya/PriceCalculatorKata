@@ -18,15 +18,31 @@ namespace PriceCalculatorKata
             get { return _taxPercentage; }
             set
             {
-                bool IsValidPercentage = value >= 0 && value <= 100;
-                if (IsValidPercentage) _taxPercentage = value / 100.0;
-                else throw new Exception("Percentage is not valid");
+                CheckPercentageValidation(value);
+                _taxPercentage = value / 100.0;
             }
+        }
+        private double _discountPercentage = 0.0;
+        public double DiscountPercentage
+        {
+            get { return _discountPercentage; }
+            set
+            {
+                CheckPercentageValidation(value);
+                _discountPercentage = value / 100.0;
+            }
+        }
+
+        public void CheckPercentageValidation(double value)
+        {
+            if (value < 0 && value > 100)
+                throw new Exception("Percentage is not valid");
         }
         public void ReportProductPrice()
         {
-            double PriceWithTax = Math.Round(Price * (1 + TaxPercentage), 2);
-            Console.WriteLine($"${Price} before tax and ${PriceWithTax} after {TaxPercentage * 100}% tax");
+            double PriceWithTaxAndDiscount = Math.Round(Price * (1 + TaxPercentage - DiscountPercentage), 2);
+            Console.WriteLine($"${Price} before tax and discount and ${PriceWithTaxAndDiscount} after {TaxPercentage * 100}% tax and {DiscountPercentage * 100}% discount");
         }
+
     }
 }
