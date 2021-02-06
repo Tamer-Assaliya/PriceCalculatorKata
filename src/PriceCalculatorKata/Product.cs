@@ -1,11 +1,16 @@
 using System;
-
+using System.Collections.Generic;
 namespace PriceCalculatorKata
 {
     enum DiscountPrecedence
     {
         BeforeTax,
         AfterTax,
+    }
+    enum AdditionalCostType
+    {
+        Absolute,
+        PriceRelative,
     }
     class Product
     {
@@ -46,14 +51,18 @@ namespace PriceCalculatorKata
             if (value < 0 && value > 100)
                 throw new Exception("Percentage is not valid");
         }
+        private Dictionary<String, double> _additionalAbsoluteCosts = new Dictionary<string, double>();
+        private Dictionary<String, double> _additionalPriceRelativeCosts = new Dictionary<string, double>();
         public void ReportProductPrice()
         {
             double TotalDiscountAmount = GetUniversalDiscountAmount() + GetUPCDiscountAmount();
             double TaxAmount = GetTaxAmount(Price);
-            double PriceWithTaxAndDiscount = Math.Round(Price + TaxAmount - TotalDiscountAmount, 2);
-            Console.WriteLine($"${Price} before tax and discount and ${PriceWithTaxAndDiscount} after {TaxPercentage * 100}% tax and {UniversalDiscountPercentage * 100}% discount");
-            if (TotalDiscountAmount > 0)
-                Console.WriteLine($"Total Discount amount = {TotalDiscountAmount}");
+            Console.WriteLine($"Cost = ${Price}");
+            Console.WriteLine($"Tax = ${TaxAmount}");
+            Console.WriteLine($"Discounts = ${TotalDiscountAmount}");
+            double AdditionalCosts = GetAdditionalCosts();
+            double Total = Math.Round(Price + TaxAmount - TotalDiscountAmount + AdditionalCosts, 2);
+            Console.WriteLine($"Total = ${Total}");
         }
         private double GetTaxAmount(double Price)
         {
@@ -62,13 +71,11 @@ namespace PriceCalculatorKata
             if (UniversalDiscountPrecedence == DiscountPrecedence.BeforeTax)
                 Price -= GetUniversalDiscountAmount();
             double TaxAmount = Math.Round(Price * TaxPercentage, 2);
-            Console.WriteLine($"Tax amount = {TaxAmount}");
             return TaxAmount;
         }
         private double GetUniversalDiscountAmount()
         {
             double UnivarsalDiscountAmount = Math.Round(Price * UniversalDiscountPercentage, 2);
-            Console.WriteLine($"Univarsal Discount amount = {UnivarsalDiscountAmount}");
             return Math.Round(UnivarsalDiscountAmount, 2);
         }
         private double GetUPCDiscountAmount()
@@ -83,8 +90,37 @@ namespace PriceCalculatorKata
                     break;
             }
             double UPCDiscountAmount = _upcDiscountPercentage * Price;
-            Console.WriteLine($"UPCD Discount amount = {Math.Round(UPCDiscountAmount, 2)}");
             return Math.Round(UPCDiscountAmount, 2);
+        }
+        public void AssignAdditionalCost(AdditionalCostType additionalCostType, String Key, double value)
+        {
+            switch (additionalCostType)
+            {
+                case AdditionalCostType.Absolute:
+                    _additionalAbsoluteCosts[Key] = value;
+                    break;
+                case AdditionalCostType.PriceRelative:
+                    CheckPercentageValidation(value);
+                    _additionalPriceRelativeCosts[Key] = (value / 100.0) * Price;
+                    break;
+                default: break;
+            }
+        }
+
+        public double GetAdditionalCosts()
+        {
+            double totalCost = 0;
+            foreach (KeyValuePair<string, double> KeyValue in _additionalAbsoluteCosts)
+            {
+                totalCost += KeyValue.Value;
+                Console.WriteLine(KeyValue.Key + " = " + Math.Round(KeyValue.Value, 2));
+            }
+            foreach (KeyValuePair<string, double> KeyValue in _additionalPriceRelativeCosts)
+            {
+                totalCost += KeyValue.Value;
+                Console.WriteLine(KeyValue.Key + " = " + Math.Round(KeyValue.Value, 2));
+            }
+            return Math.Round(totalCost, 2);
         }
     }
 }
