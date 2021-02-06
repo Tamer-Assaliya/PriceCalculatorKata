@@ -28,7 +28,7 @@ namespace PriceCalculatorKata
         public double Price
         {
             get { return _price; }
-            set { _price = Math.Round(value, 2); }
+            set { _price = Math.Round(value, 4); }
         }
         private double _taxPercentage = 0.2;
         public double TaxPercentage
@@ -69,9 +69,9 @@ namespace PriceCalculatorKata
             double TaxAmount = GetTaxAmount(Price);
             string RegionCurrencySymbol = RegionInfo.CurrencySymbol;
             string RegionISOCurrencySymbol = RegionInfo.ISOCurrencySymbol;
-            Console.WriteLine($"Cost = {RegionCurrencySymbol}{Price} {RegionISOCurrencySymbol}");
-            Console.WriteLine($"Tax = {RegionCurrencySymbol}{TaxAmount} {RegionISOCurrencySymbol}");
-            if (Cap > 0) Console.WriteLine($"Discounts = {RegionCurrencySymbol}{TotalDiscountAmount} {RegionISOCurrencySymbol}");
+            Console.WriteLine($"Cost = {RegionCurrencySymbol}{Math.Round(Price, 2)} {RegionISOCurrencySymbol}");
+            Console.WriteLine($"Tax = {RegionCurrencySymbol}{Math.Round(TaxAmount, 2)} {RegionISOCurrencySymbol}");
+            if (Cap > 0) Console.WriteLine($"Discounts = {RegionCurrencySymbol}{Math.Round(TotalDiscountAmount, 2)} {RegionISOCurrencySymbol}");
             double AdditionalCosts = GetAdditionalCosts();
             double Total = Math.Round(Price + TaxAmount - TotalDiscountAmount + AdditionalCosts, 2);
             Console.WriteLine($"Total = {RegionCurrencySymbol}{Total} {RegionISOCurrencySymbol}");
@@ -82,13 +82,13 @@ namespace PriceCalculatorKata
                 Price -= GetUPCDiscountAmount();
             if (UniversalDiscountPrecedence == DiscountPrecedence.BeforeTax)
                 Price -= GetUniversalDiscountAmount();
-            double TaxAmount = Math.Round(Price * TaxPercentage, 2);
+            double TaxAmount = Math.Round(Price * TaxPercentage, 4);
             return TaxAmount;
         }
         private double GetUniversalDiscountAmount()
         {
-            double UnivarsalDiscountAmount = Math.Round(Price * UniversalDiscountPercentage, 2);
-            return Math.Round(UnivarsalDiscountAmount, 2);
+            double UnivarsalDiscountAmount = Price * UniversalDiscountPercentage;
+            return Math.Round(UnivarsalDiscountAmount, 4);
         }
         private double GetUPCDiscountAmount()
         {
@@ -105,18 +105,18 @@ namespace PriceCalculatorKata
             if (ProductDiscountType == DiscountType.Additive)
                 UPCDiscountAmount = _upcDiscountPercentage * Price;
             else if (ProductDiscountType == DiscountType.Multiplicative) UPCDiscountAmount = _upcDiscountPercentage * (Price - GetUniversalDiscountAmount());
-            return Math.Round(UPCDiscountAmount, 2);
+            return Math.Round(UPCDiscountAmount, 4);
         }
         public void AssignAdditionalCost(ValueComputationType valueComputationType, String Key, double value)
         {
             switch (valueComputationType)
             {
                 case ValueComputationType.Absolute:
-                    _additionalCosts[Key] = value;
+                    _additionalCosts[Key] = Math.Round(value, 4);
                     break;
                 case ValueComputationType.PriceRelative:
                     CheckPercentageValidation(value);
-                    _additionalCosts[Key] = (value / 100.0) * Price;
+                    _additionalCosts[Key] = Math.Round((value / 100.0) * Price, 4);
                     break;
                 default: break;
             }
@@ -128,20 +128,20 @@ namespace PriceCalculatorKata
             foreach (KeyValuePair<string, double> KeyValue in _additionalCosts)
             {
                 totalCost += KeyValue.Value;
-                Console.WriteLine(KeyValue.Key + " = " + Math.Round(KeyValue.Value, 2));
+                Console.WriteLine(KeyValue.Key + " = " + Math.Round(KeyValue.Value, 2), 2);
             }
-            return Math.Round(totalCost, 2);
+            return totalCost;
         }
         public void AssignCapAmount(ValueComputationType valueComputationType, double value)
         {
             switch (valueComputationType)
             {
                 case ValueComputationType.Absolute:
-                    Cap = value;
+                    Cap = Math.Round(value, 4);
                     break;
                 case ValueComputationType.PriceRelative:
                     CheckPercentageValidation(value);
-                    Cap = (value / 100.0) * Price;
+                    Cap = Math.Round((value / 100.0) * Price, 4);
                     break;
                 default: break;
             }
