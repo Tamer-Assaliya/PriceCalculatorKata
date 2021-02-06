@@ -12,6 +12,11 @@ namespace PriceCalculatorKata
         Absolute,
         PriceRelative,
     }
+    enum DiscountType
+    {
+        Additive,
+        Multiplicative,
+    }
     class Product
     {
         public string Name { get; set; }
@@ -32,7 +37,7 @@ namespace PriceCalculatorKata
                 _taxPercentage = value / 100.0;
             }
         }
-
+        public DiscountType ProductDiscountType { get; set; } = DiscountType.Additive;
         private double _upcDiscountPercentage = 0.0;
         public DiscountPrecedence UPCDiscountPrecedence { get; set; } = DiscountPrecedence.AfterTax;
         private double _universalDiscountPercentage = 0.0;
@@ -55,7 +60,9 @@ namespace PriceCalculatorKata
         private Dictionary<String, double> _additionalPriceRelativeCosts = new Dictionary<string, double>();
         public void ReportProductPrice()
         {
-            double TotalDiscountAmount = GetUniversalDiscountAmount() + GetUPCDiscountAmount();
+            double UniversalDiscountAmount = GetUniversalDiscountAmount();
+            double UPCDiscountAmount = GetUPCDiscountAmount();
+            double TotalDiscountAmount = UniversalDiscountAmount + UPCDiscountAmount;
             double TaxAmount = GetTaxAmount(Price);
             Console.WriteLine($"Cost = ${Price}");
             Console.WriteLine($"Tax = ${TaxAmount}");
@@ -89,7 +96,10 @@ namespace PriceCalculatorKata
                     _upcDiscountPercentage = 0.0;
                     break;
             }
-            double UPCDiscountAmount = _upcDiscountPercentage * Price;
+            double UPCDiscountAmount;
+            if (ProductDiscountType == DiscountType.Additive)
+                UPCDiscountAmount = _upcDiscountPercentage * Price;
+            else UPCDiscountAmount = _upcDiscountPercentage * (Price - GetUniversalDiscountAmount());
             return Math.Round(UPCDiscountAmount, 2);
         }
         public void AssignAdditionalCost(AdditionalCostType additionalCostType, String Key, double value)
