@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+
 namespace PriceCalculatorKata
 {
     enum DiscountPrecedence
@@ -21,6 +23,7 @@ namespace PriceCalculatorKata
     {
         public string Name { get; set; }
         public int UPC { get; set; }
+        public RegionInfo RegionInfo { private get; set; }
         private double _price;
         public double Price
         {
@@ -64,12 +67,14 @@ namespace PriceCalculatorKata
             double UPCDiscountAmount = GetUPCDiscountAmount();
             double TotalDiscountAmount = Math.Clamp(UniversalDiscountAmount + UPCDiscountAmount, 0, Cap);
             double TaxAmount = GetTaxAmount(Price);
-            Console.WriteLine($"Cost = ${Price}");
-            Console.WriteLine($"Tax = ${TaxAmount}");
-            Console.WriteLine($"Discounts = ${TotalDiscountAmount}");
+            string RegionCurrencySymbol = RegionInfo.CurrencySymbol;
+            string RegionISOCurrencySymbol = RegionInfo.ISOCurrencySymbol;
+            Console.WriteLine($"Cost = {RegionCurrencySymbol}{Price} {RegionISOCurrencySymbol}");
+            Console.WriteLine($"Tax = {RegionCurrencySymbol}{TaxAmount} {RegionISOCurrencySymbol}");
+            if (Cap > 0) Console.WriteLine($"Discounts = {RegionCurrencySymbol}{TotalDiscountAmount} {RegionISOCurrencySymbol}");
             double AdditionalCosts = GetAdditionalCosts();
             double Total = Math.Round(Price + TaxAmount - TotalDiscountAmount + AdditionalCosts, 2);
-            Console.WriteLine($"Total = ${Total}");
+            Console.WriteLine($"Total = {RegionCurrencySymbol}{Total} {RegionISOCurrencySymbol}");
         }
         private double GetTaxAmount(double Price)
         {
