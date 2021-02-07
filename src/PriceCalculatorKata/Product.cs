@@ -7,7 +7,7 @@ namespace PriceCalculatorKata
         BeforeTax,
         AfterTax,
     }
-    enum AdditionalCostType
+    enum ValueComputationType
     {
         Absolute,
         PriceRelative,
@@ -56,13 +56,13 @@ namespace PriceCalculatorKata
             if (value < 0 && value > 100)
                 throw new Exception("Percentage is not valid");
         }
-        private Dictionary<String, double> _additionalAbsoluteCosts = new Dictionary<string, double>();
-        private Dictionary<String, double> _additionalPriceRelativeCosts = new Dictionary<string, double>();
+        private Dictionary<String, double> _additionalCosts = new Dictionary<string, double>();
+        private double Cap = double.MaxValue;
         public void ReportProductPrice()
         {
             double UniversalDiscountAmount = GetUniversalDiscountAmount();
             double UPCDiscountAmount = GetUPCDiscountAmount();
-            double TotalDiscountAmount = UniversalDiscountAmount + UPCDiscountAmount;
+            double TotalDiscountAmount = Math.Clamp(UniversalDiscountAmount + UPCDiscountAmount, 0, Cap);
             double TaxAmount = GetTaxAmount(Price);
             Console.WriteLine($"Cost = ${Price}");
             Console.WriteLine($"Tax = ${TaxAmount}");
@@ -96,22 +96,22 @@ namespace PriceCalculatorKata
                     _upcDiscountPercentage = 0.0;
                     break;
             }
-            double UPCDiscountAmount;
+            double UPCDiscountAmount = 0;
             if (ProductDiscountType == DiscountType.Additive)
                 UPCDiscountAmount = _upcDiscountPercentage * Price;
-            else UPCDiscountAmount = _upcDiscountPercentage * (Price - GetUniversalDiscountAmount());
+            else if (ProductDiscountType == DiscountType.Multiplicative) UPCDiscountAmount = _upcDiscountPercentage * (Price - GetUniversalDiscountAmount());
             return Math.Round(UPCDiscountAmount, 2);
         }
-        public void AssignAdditionalCost(AdditionalCostType additionalCostType, String Key, double value)
+        public void AssignAdditionalCost(ValueComputationType valueComputationType, String Key, double value)
         {
-            switch (additionalCostType)
+            switch (valueComputationType)
             {
-                case AdditionalCostType.Absolute:
-                    _additionalAbsoluteCosts[Key] = value;
+                case ValueComputationType.Absolute:
+                    _additionalCosts[Key] = value;
                     break;
-                case AdditionalCostType.PriceRelative:
+                case ValueComputationType.PriceRelative:
                     CheckPercentageValidation(value);
-                    _additionalPriceRelativeCosts[Key] = (value / 100.0) * Price;
+                    _additionalCosts[Key] = (value / 100.0) * Price;
                     break;
                 default: break;
             }
@@ -120,17 +120,26 @@ namespace PriceCalculatorKata
         public double GetAdditionalCosts()
         {
             double totalCost = 0;
-            foreach (KeyValuePair<string, double> KeyValue in _additionalAbsoluteCosts)
-            {
-                totalCost += KeyValue.Value;
-                Console.WriteLine(KeyValue.Key + " = " + Math.Round(KeyValue.Value, 2));
-            }
-            foreach (KeyValuePair<string, double> KeyValue in _additionalPriceRelativeCosts)
+            foreach (KeyValuePair<string, double> KeyValue in _additionalCosts)
             {
                 totalCost += KeyValue.Value;
                 Console.WriteLine(KeyValue.Key + " = " + Math.Round(KeyValue.Value, 2));
             }
             return Math.Round(totalCost, 2);
+        }
+        public void AssignCapAmount(ValueComputationType valueComputationType, double value)
+        {
+            switch (valueComputationType)
+            {
+                case ValueComputationType.Absolute:
+                    Cap = value;
+                    break;
+                case ValueComputationType.PriceRelative:
+                    CheckPercentageValidation(value);
+                    Cap = (value / 100.0) * Price;
+                    break;
+                default: break;
+            }
         }
     }
 }
