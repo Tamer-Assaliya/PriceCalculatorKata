@@ -40,8 +40,11 @@ namespace PriceCalculatorKata
         }
         public void ReportProductPrice()
         {
+            double DiscountAmount = Math.Round(Price * DiscountPercentage, 2);
             double PriceWithTaxAndDiscount = Math.Round(Price * (1 + TaxPercentage - DiscountPercentage), 2);
             Console.WriteLine($"${Price} before tax and discount and ${PriceWithTaxAndDiscount} after {TaxPercentage * 100}% tax and {DiscountPercentage * 100}% discount");
+            if (DiscountAmount > 0)
+                Console.WriteLine($"Discount amount = {DiscountAmount}");
         }
 
     }
