@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Globalization;
 namespace PriceCalculatorKata
 {
     class Program
@@ -14,15 +14,17 @@ namespace PriceCalculatorKata
                 Price = 20.25,
                 UPCDiscountPrecedence = DiscountPrecedence.AfterTax,
                 UniversalDiscountPrecedence = DiscountPrecedence.AfterTax,
-                UniversalDiscountPercentage = 15,
                 TaxPercentage = 21,
-                ProductDiscountType = DiscountType.Additive
+                UniversalDiscountPercentage = 15,
+                ProductDiscountType = DiscountType.Multiplicative,
+                RegionInfo = new RegionInfo("US"), //use region info like: US, GB, JP 
+
+
             };
-            // product.AssignCapAmount(ValueComputationType.PriceRelative, 20);
+            product.AssignAdditionalCost(ValueComputationType.PriceRelative, "Transport", 3);
+
             product.ReportProductPrice();
             Console.WriteLine("---");
-            // product.AssignCapAmount(ValueComputationType.Absolute, 4);
-            product.ReportProductPrice();
         }
     }
 }
