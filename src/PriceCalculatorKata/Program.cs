@@ -14,17 +14,17 @@ namespace PriceCalculatorKata
                 Price = 20.25,
                 UPCDiscountPrecedence = DiscountPrecedence.AfterTax,
                 UniversalDiscountPrecedence = DiscountPrecedence.AfterTax,
-                TaxPercentage = 20,
-                ProductDiscountType = DiscountType.Additive,
-                RegionInfo = new RegionInfo("GB"), //use region info like: US, GB, JP 
+                TaxPercentage = 21,
+                UniversalDiscountPercentage = 15,
+                ProductDiscountType = DiscountType.Multiplicative,
+                RegionInfo = new RegionInfo("US"), //use region info like: US, GB, JP 
 
 
             };
-            product.AssignCapAmount(ValueComputationType.Absolute, 0); //no discounts
+            product.AssignAdditionalCost(ValueComputationType.PriceRelative, "Transport", 3);
+
             product.ReportProductPrice();
             Console.WriteLine("---");
-            product.Price = 17.76;
-            product.ReportProductPrice();
         }
     }
 }
