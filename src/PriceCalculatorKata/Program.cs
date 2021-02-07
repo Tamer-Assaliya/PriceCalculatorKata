@@ -16,12 +16,12 @@ namespace PriceCalculatorKata
                 UniversalDiscountPrecedence = DiscountPrecedence.AfterTax,
                 UniversalDiscountPercentage = 15,
                 TaxPercentage = 21,
+                ProductDiscountType = DiscountType.Additive
             };
-            product.AssignAdditionalCost(AdditionalCostType.PriceRelative, "Packaging", 1);
-            product.AssignAdditionalCost(AdditionalCostType.Absolute, "Transport", 2.2);
+            // product.AssignCapAmount(ValueComputationType.PriceRelative, 20);
             product.ReportProductPrice();
             Console.WriteLine("---");
-            product.ProductDiscountType = DiscountType.Multiplicative;
+            // product.AssignCapAmount(ValueComputationType.Absolute, 4);
             product.ReportProductPrice();
         }
     }
