@@ -48,32 +48,32 @@ namespace PriceCalculatorKata
         private double Cap = double.MaxValue;
         public void ReportProductPrice()
         {
-            double UniversalDiscountAmount = GetUniversalDiscountAmount();
+            double universalDiscountAmount = GetUniversalDiscountAmount();
             double UPCDiscountAmount = GetUPCDiscountAmount();
-            double TotalDiscountAmount = Math.Clamp(UniversalDiscountAmount + UPCDiscountAmount, 0, Cap);
-            double TaxAmount = GetTaxAmount(Price);
-            string RegionCurrencySymbol = RegionInfo.CurrencySymbol;
-            string RegionISOCurrencySymbol = RegionInfo.ISOCurrencySymbol;
-            Console.WriteLine($"Cost = {RegionCurrencySymbol}{Math.Round(Price, 2)} {RegionISOCurrencySymbol}");
-            Console.WriteLine($"Tax = {RegionCurrencySymbol}{Math.Round(TaxAmount, 2)} {RegionISOCurrencySymbol}");
-            if (Cap > 0) Console.WriteLine($"Discounts = {RegionCurrencySymbol}{Math.Round(TotalDiscountAmount, 2)} {RegionISOCurrencySymbol}");
-            double AdditionalCosts = GetAdditionalCosts();
-            double Total = Math.Round(Price + TaxAmount - TotalDiscountAmount + AdditionalCosts, 2);
-            Console.WriteLine($"Total = {RegionCurrencySymbol}{Total} {RegionISOCurrencySymbol}");
+            double totalDiscountAmount = Math.Clamp(universalDiscountAmount + UPCDiscountAmount, 0, Cap);
+            double taxAmount = GetTaxAmount(Price);
+            string regionCurrencySymbol = RegionInfo.CurrencySymbol;
+            string regionISOCurrencySymbol = RegionInfo.ISOCurrencySymbol;
+            Console.WriteLine($"Cost = {regionCurrencySymbol}{Math.Round(Price, 2)} {regionISOCurrencySymbol}");
+            Console.WriteLine($"Tax = {regionCurrencySymbol}{Math.Round(taxAmount, 2)} {regionISOCurrencySymbol}");
+            if (Cap > 0) Console.WriteLine($"Discounts = {regionCurrencySymbol}{Math.Round(totalDiscountAmount, 2)} {regionISOCurrencySymbol}");
+            double additionalCosts = GetAdditionalCosts();
+            double total = Math.Round(Price + taxAmount - totalDiscountAmount + additionalCosts, 2);
+            Console.WriteLine($"Total = {regionCurrencySymbol}{total} {regionISOCurrencySymbol}");
         }
-        private double GetTaxAmount(double Price)
+        private double GetTaxAmount(double price)
         {
             if (UPCDiscountPrecedence == DiscountPrecedence.BeforeTax)
-                Price -= GetUPCDiscountAmount();
+                price -= GetUPCDiscountAmount();
             if (UniversalDiscountPrecedence == DiscountPrecedence.BeforeTax)
-                Price -= GetUniversalDiscountAmount();
-            double TaxAmount = Math.Round(Price * TaxPercentage, 4);
-            return TaxAmount;
+                price -= GetUniversalDiscountAmount();
+            double taxAmount = Math.Round(price * TaxPercentage, 4);
+            return taxAmount;
         }
         private double GetUniversalDiscountAmount()
         {
-            double UnivarsalDiscountAmount = Price * UniversalDiscountPercentage;
-            return Math.Round(UnivarsalDiscountAmount, 4);
+            double univarsalDiscountAmount = Price * UniversalDiscountPercentage;
+            return Math.Round(univarsalDiscountAmount, 4);
         }
         private double GetUPCDiscountAmount()
         {
@@ -92,16 +92,16 @@ namespace PriceCalculatorKata
             else if (ProductDiscountType == DiscountType.Multiplicative) UPCDiscountAmount = _upcDiscountPercentage * (Price - GetUniversalDiscountAmount());
             return Math.Round(UPCDiscountAmount, 4);
         }
-        public void AssignAdditionalCost(ValueComputationType valueComputationType, String Key, double value)
+        public void AssignAdditionalCost(ValueComputationType valueComputationType, String key, double value)
         {
             switch (valueComputationType)
             {
                 case ValueComputationType.Absolute:
-                    _additionalCosts[Key] = Math.Round(value, 4);
+                    _additionalCosts[key] = Math.Round(value, 4);
                     break;
                 case ValueComputationType.PriceRelative:
                     CheckPercentageValidation(value);
-                    _additionalCosts[Key] = Math.Round((value / 100.0) * Price, 4);
+                    _additionalCosts[key] = Math.Round((value / 100.0) * Price, 4);
                     break;
                 default: break;
             }
