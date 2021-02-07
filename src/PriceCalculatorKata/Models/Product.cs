@@ -4,21 +4,6 @@ using System.Globalization;
 
 namespace PriceCalculatorKata
 {
-    enum DiscountPrecedence
-    {
-        BeforeTax,
-        AfterTax,
-    }
-    enum ValueComputationType
-    {
-        Absolute,
-        PriceRelative,
-    }
-    enum DiscountType
-    {
-        Additive,
-        Multiplicative,
-    }
     class Product
     {
         public string Name { get; set; }
