@@ -11,14 +11,15 @@ namespace PriceCalculatorKata
             {
                 Name = "The Little Prince",
                 UPC = 12345,
-                Price = 20.253,
+                Price = 20.25,
+                UPCDiscountPrecedence = DiscountPrecedence.BeforeTax,
+                UniversalDiscountPercentage = 15,
             };
-            product.UniversalDiscountPercentage = 15;
             product.ReportProductPrice();
-            product.UPC = 789;
-            product.TaxPercentage = 21;
-            Console.WriteLine("---");
-            product.ReportProductPrice();
+            // product.UPC = 789;
+            // product.TaxPercentage = 21;
+            // Console.WriteLine("---");
+            // product.ReportProductPrice();
         }
     }
 }
