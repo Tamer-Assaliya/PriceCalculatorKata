@@ -8,6 +8,7 @@ namespace PriceCalculatorKata
         public double Tax { get; set; }
         public double TotalDiscount { get; set; }
         public double AdditionalCosts { get; set; }
+
         public double GetTotalCost()
         {
             double totalCost = Price + Tax + AdditionalCosts - TotalDiscount;

@@ -7,52 +7,52 @@ namespace PriceCalculatorKata
     {
         static void Main(string[] args)
         {
-            Product product = new Product()
+            var product = new Product()
             {
                 Name = "The Little Prince",
                 Price = 20.25,
                 UPC = 12345,
                 UPCDiscountPercentage = 7,
             };
-            DiscountCalculations discountCalculations = new DiscountCalculations()
+            var discountCalculations = new DiscountCalculations()
             {
                 Product = product,
                 UniversalDiscountPercentage = 15,
                 ProductDiscountType = DiscountType.Multiplicative,
             };
             // discountCalculations.AssignCapAmount(ValueComputationType.Absolute, 4);
-            TaxCalculation taxCalculation = new TaxCalculation()
+            var taxCalculation = new TaxCalculation()
             {
                 Product = product,
                 TaxPercentage = 21,
                 UniversalDiscountPrecedence = DiscountPrecedence.AfterTax,
-                UPCDiscountPrecedence = DiscountPrecedence.AfterTax,
+                upcDiscountPrecedence = DiscountPrecedence.AfterTax,
                 UniversalDiscountAmount = discountCalculations.GetUniversalDiscountAmount(),
                 UPCDiscountAmount = discountCalculations.GetUPCDiscountAmount(),
             };
-            AdditionalCostsCalculations additionalCostsCalculations = new AdditionalCostsCalculations()
+            var additionalCostsCalculations = new AdditionalCostsCalculations()
             {
                 Product = product,
             };
             additionalCostsCalculations.AssignAdditionalCost(ValueComputationType.PriceRelative, "Transport", 3);
-            ProductReport productReport = new ProductReport()
+            var productReport = new ProductReport()
             {
                 RegionInfo = new RegionInfo("US"), ////use region info like: US, GB, JP
             };
 
-            double cost = product.Price;
-            double tax = taxCalculation.GetTaxAmount();
-            double discount = discountCalculations.GetTotalDiscountAmount();
-            double totalAdditionalCost = additionalCostsCalculations.GetTotalAdditionalCost();
-            Dictionary<string, double> additionalCosts = additionalCostsCalculations.GetAdditionalCosts();
-            TotalCostCalculation totalCostCalculation = new TotalCostCalculation()
+            var cost = product.Price;
+            var tax = taxCalculation.GetTaxAmount();
+            var discount = discountCalculations.GetTotalDiscountAmount();
+            var totalAdditionalCost = additionalCostsCalculations.GetTotalAdditionalCost();
+            Dictionary<string, double> additionalCosts = additionalCostsCalculations.AdditionalCosts;
+            var totalCostCalculation = new TotalCostCalculation()
             {
                 Price = cost,
                 Tax = tax,
                 TotalDiscount = discount,
                 AdditionalCosts = totalAdditionalCost,
             };
-            double totalCost = totalCostCalculation.GetTotalCost();
+            var totalCost = totalCostCalculation.GetTotalCost();
 
             productReport.ReportCostByName("Cost", cost);
             productReport.ReportCostByName("Tax", tax);

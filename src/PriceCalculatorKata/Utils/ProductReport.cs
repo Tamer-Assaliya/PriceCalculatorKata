@@ -6,6 +6,7 @@ namespace PriceCalculatorKata
     class ProductReport
     {
         public RegionInfo RegionInfo { private get; set; }
+
         public void ReportCostByName(string name, double cost)
         {
             double value = Math.Round(cost, 2);
