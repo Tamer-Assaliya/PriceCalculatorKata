@@ -8,12 +8,12 @@ namespace PriceCalculatorKata
         public Product Product { get; set; }
         public DiscountType ProductDiscountType { get; set; } = DiscountType.Additive;
         public double UniversalDiscountPercentage { get; set; } = 0.0;
-        private double GetUniversalDiscountAmount()
+        public double GetUniversalDiscountAmount()
         {
             double univarsalDiscountAmount = Product.Price * UniversalDiscountPercentage;
             return Math.Round(univarsalDiscountAmount, 4);
         }
-        private double GetUPCDiscountAmount(int UPC)
+        public double GetUPCDiscountAmount()
         {
             double UPCDiscountAmount = 0;
             if (ProductDiscountType == DiscountType.Additive)
@@ -35,10 +35,10 @@ namespace PriceCalculatorKata
                 default: break;
             }
         }
-        public double GetTotalDiscountAmount(int UPC)
+        public double GetTotalDiscountAmount()
         {
             double universalDiscountAmount = GetUniversalDiscountAmount();
-            double UPCDiscountAmount = GetUPCDiscountAmount(UPC);
+            double UPCDiscountAmount = GetUPCDiscountAmount();
             double totalDiscountAmount = Math.Clamp(universalDiscountAmount + UPCDiscountAmount, 0, Cap);
             return totalDiscountAmount;
         }
