@@ -6,7 +6,7 @@ namespace PriceCalculatorKata
     class AdditionalCostsCalculations
     {
         private Dictionary<String, double> _additionalCosts = new Dictionary<string, double>();
-        public double ProductPrice { get; set; }
+        public Product Product { get; set; }
         public void AssignAdditionalCost(ValueComputationType valueComputationType, String key, double value)
         {
             switch (valueComputationType)
@@ -16,7 +16,7 @@ namespace PriceCalculatorKata
                     break;
                 case ValueComputationType.PriceRelative:
                     var percentage = value.CastPercentage();
-                    _additionalCosts[key] = Math.Round(percentage * ProductPrice, 4);
+                    _additionalCosts[key] = Math.Round(percentage * Product.Price, 4);
                     break;
                 default: break;
             }
@@ -28,7 +28,6 @@ namespace PriceCalculatorKata
             foreach (KeyValuePair<string, double> KeyValue in _additionalCosts)
             {
                 totalCost += KeyValue.Value;
-                Console.WriteLine(KeyValue.Key + " = " + Math.Round(KeyValue.Value, 2), 2);
             }
             return totalCost;
         }
