@@ -7,7 +7,7 @@ namespace PriceCalculatorKata
         private double Cap = double.MaxValue;
         public Product Product { get; set; }
         public DiscountType ProductDiscountType { get; set; } = DiscountType.Additive;
-        private double _universalDiscountPercentage { get; set; } = 0.0;
+        private double _universalDiscountPercentage { get; set; }
         public double UniversalDiscountPercentage
         {
             get { return _universalDiscountPercentage; }
