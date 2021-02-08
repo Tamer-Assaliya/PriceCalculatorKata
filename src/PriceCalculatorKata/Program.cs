@@ -45,7 +45,7 @@ namespace PriceCalculatorKata
             var discount = discountCalculations.GetTotalDiscountAmount();
             var totalAdditionalCost = additionalCostsCalculations.GetTotalAdditionalCost();
             Dictionary<string, double> additionalCosts = additionalCostsCalculations.AdditionalCosts;
-            var totalCostCalculation = new TotalCostCalculation()
+            var totalCostCalculation = new TotalCost()
             {
                 Price = cost,
                 Tax = tax,
