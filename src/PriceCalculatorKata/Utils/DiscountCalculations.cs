@@ -2,7 +2,7 @@ using System;
 
 namespace PriceCalculatorKata
 {
-    class DiscountCalculations
+    class DiscountCalculations : ICalculations
     {
         private double Cap = double.MaxValue;
         public Product Product { get; set; }
@@ -46,7 +46,7 @@ namespace PriceCalculatorKata
             }
         }
 
-        public double GetTotalDiscountAmount()
+        public double GetTotal()
         {
             double universalDiscountAmount = GetUniversalDiscountAmount();
             double upcDiscountAmount = GetUPCDiscountAmount();

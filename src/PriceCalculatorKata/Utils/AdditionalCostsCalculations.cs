@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 namespace PriceCalculatorKata
 {
-    class AdditionalCostsCalculations
+    class AdditionalCostsCalculations : ICalculations
     {
         public Dictionary<String, double> AdditionalCosts { private set; get; } = new Dictionary<String, double>();
         public Product Product { get; set; }
@@ -23,6 +23,6 @@ namespace PriceCalculatorKata
             }
         }
 
-        public double GetTotalAdditionalCost() => AdditionalCosts.Values.Sum();
+        public double GetTotal() => AdditionalCosts.Values.Sum();
     }
 }
