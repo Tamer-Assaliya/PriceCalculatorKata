@@ -2,17 +2,16 @@ using System;
 
 namespace PriceCalculatorKata
 {
-    class TaxCalculation : ICalculations
+    class TaxCalculation : Calculations
     {
         private double _taxPercentage;
         public double TaxPercentage { get { return _taxPercentage; } set { _taxPercentage = value.CastPercentage(); } }
         public DiscountPrecedence UniversalDiscountPrecedence { get; set; } = DiscountPrecedence.AfterTax;
         public DiscountPrecedence upcDiscountPrecedence { get; set; } = DiscountPrecedence.AfterTax;
-        public Product Product { get; set; }
         public double UPCDiscountAmount { get; set; }
         public double UniversalDiscountAmount { get; set; }
 
-        public double GetTotal()
+        public override double GetTotal()
         {
             double productPrice = Product.Price;
             if (upcDiscountPrecedence == DiscountPrecedence.BeforeTax)

@@ -2,10 +2,9 @@ using System;
 
 namespace PriceCalculatorKata
 {
-    class DiscountCalculations : ICalculations
+    class DiscountCalculations : Calculations
     {
         private double Cap = double.MaxValue;
-        public Product Product { get; set; }
         public DiscountType ProductDiscountType { get; set; } = DiscountType.Additive;
         private double _universalDiscountPercentage { get; set; }
 
@@ -32,21 +31,9 @@ namespace PriceCalculatorKata
         }
 
         public void AssignCapAmount(ValueComputationType valueComputationType, double value)
-        {
-            switch (valueComputationType)
-            {
-                case ValueComputationType.Absolute:
-                    Cap = Math.Round(value, 4);
-                    break;
-                case ValueComputationType.PriceRelative:
-                    var percentage = value.CastPercentage();
-                    Cap = Math.Round(percentage * Product.Price, 4);
-                    break;
-                default: break;
-            }
-        }
+        => Cap = ComputeValueByType(valueComputationType, value);
 
-        public double GetTotal()
+        public override double GetTotal()
         {
             double universalDiscountAmount = GetUniversalDiscountAmount();
             double upcDiscountAmount = GetUPCDiscountAmount();
