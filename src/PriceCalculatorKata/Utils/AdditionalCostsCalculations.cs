@@ -23,11 +23,6 @@ namespace PriceCalculatorKata
             }
         }
 
-        public double GetTotalAdditionalCost()
-        {
-            List<double> values = new List<double>(AdditionalCosts.Values);
-            double totalCost = values.Sum();
-            return totalCost;
-        }
+        public double GetTotalAdditionalCost() => AdditionalCosts.Values.Sum();
     }
 }
