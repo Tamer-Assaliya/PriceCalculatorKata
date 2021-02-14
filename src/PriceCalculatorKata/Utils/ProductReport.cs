@@ -5,7 +5,7 @@ namespace PriceCalculatorKata
 {
     class ProductReport
     {
-        public RegionInfo RegionInfo { private get; set; }
+        public RegionInfo RegionInfo { private get; set; } = new RegionInfo("US");
 
         public void ReportCostByName(string name, double cost)
         {
